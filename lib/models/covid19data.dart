@@ -6,10 +6,8 @@ import 'dart:convert';
 import 'dart:collection';
 
 class COVID19DataModel extends ChangeNotifier {
-/*
-   fetch JSON from https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json
-   new data published once a day at  6PM
-   */
+  /* new data published once a day at  6PM */
+  final url = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json';
   List<Record> _records = [];
   var _byDate = LinkedHashMap<DateTime, List<int>>();
   var _byRegion = Map<String, List<int>>();
@@ -19,7 +17,6 @@ class COVID19DataModel extends ChangeNotifier {
   }
 
   fetchData ({bool ignorecache = false}) async {
-    const url = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json';
     final dir = await getApplicationSupportDirectory();
 
     var jsonData = "";
@@ -78,8 +75,12 @@ class COVID19DataModel extends ChangeNotifier {
   }
 
   List<Record> lastDay() {
-    var d = _byDate.keys.last;
-    return List.unmodifiable(_byDate[d].map((idx) => _records[idx]));
+    if (_byDate.keys.isNotEmpty) {
+      var d = _byDate.keys.last;
+      print("LAST DAY: $d");
+      return List.unmodifiable(_byDate[d].map((idx) => _records[idx]));
+    }
+    return [];
   }
 
 }
