@@ -83,6 +83,10 @@ class COVID19DataModel extends ChangeNotifier {
     return [];
   }
 
+  List<Record> getRegion(var region){
+    print("REGION: $region");
+    return List.unmodifiable(_byRegion[region].map((idx) => _records[idx]));
+  }
 }
 
 @immutable
