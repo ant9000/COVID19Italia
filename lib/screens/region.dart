@@ -14,6 +14,11 @@ class RegionPage extends StatefulWidget {
 
 class _RegionState extends State<RegionPage> {
   String region;
+  final colors = {
+    'positivi': charts.MaterialPalette.blue.shadeDefault,
+    'guariti':  charts.MaterialPalette.green.shadeDefault,
+    'deceduti': charts.MaterialPalette.red.shadeDefault,
+  };
 
   @override
   void initState() {
@@ -26,29 +31,24 @@ class _RegionState extends State<RegionPage> {
     var data = Provider.of<COVID19DataModel>(context);
     region = ModalRoute.of(context).settings.arguments;
     var records = data.getRegion(region);
-    var colors = [
-      charts.MaterialPalette.blue.shadeDefault,
-      charts.MaterialPalette.green.shadeDefault,
-      charts.MaterialPalette.red.shadeDefault,
-    ];
     List<charts.Series<Record, DateTime>> seriesList = [
       new charts.Series<Record, DateTime>(
         id: 'Attualmente positivi',
-        colorFn: (_, __) => colors[0],
+        colorFn: (_, __) => colors['positivi'],
         domainFn: (Record record, _) => record.data,
         measureFn: (Record record, _) => record.totaleAttualmentePositivi,
         data: records,
       ),
       new charts.Series<Record, DateTime>(
         id: 'Guariti',
-        colorFn: (_, __) => colors[1],
+        colorFn: (_, __) => colors['guariti'],
         domainFn: (Record record, _) => record.data,
         measureFn: (Record record, _) => record.dimessiGuariti,
         data: records,
       ),
       new charts.Series<Record, DateTime>(
         id: 'Morti',
-        colorFn: (_, __) => colors[2],
+        colorFn: (_, __) => colors['deceduti'],
         domainFn: (Record record, _) => record.data,
         measureFn: (Record record, _) => record.deceduti,
         data: records,
@@ -67,7 +67,7 @@ class _RegionState extends State<RegionPage> {
                 child: new Column(
                     children: <Widget>[
                       new SizedBox(
-                        height: 0.5*size.height,
+                        height: (size.width > size.height ? 0.7 : 0.5) *size.height,
                         child: new charts.TimeSeriesChart(
                           seriesList,
                           behaviors: [new charts.SeriesLegend(

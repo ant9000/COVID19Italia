@@ -7,7 +7,8 @@ import '../models/covid19data.dart';
 Drawer buildDrawer(BuildContext context, String currentRoute) {
   var data = Provider.of<COVID19DataModel>(context);
   String region = ModalRoute.of(context).settings.arguments;
-  var records = data.lastDay();
+  var records = data.lastDayRecords();
+  var date = records.isNotEmpty ? records[0].data.toIso8601String().substring(0,10) : '';
   var tiles = <ListTile>[];
   for(var record in records){
     tiles.add(ListTile(
@@ -20,9 +21,9 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
   return Drawer(
     child: ListView(
       children: <Widget>[
-        const DrawerHeader(
+        DrawerHeader(
           child: Center(
-            child: Text('COVID-19 Italia'),
+            child: Text('CODIV-19 Italia [${date}]'),
           ),
         ),
         ListTile(

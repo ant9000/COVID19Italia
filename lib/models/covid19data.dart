@@ -74,7 +74,7 @@ class COVID19DataModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Record> lastDay() {
+  List<Record> lastDayRecords() {
     if (_byDate.keys.isNotEmpty) {
       var d = _byDate.keys.last;
       print("LAST DAY: $d");

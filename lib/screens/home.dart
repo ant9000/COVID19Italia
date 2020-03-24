@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<COVID19DataModel>(context);
-    var records = data.lastDay();
+    var records = data.lastDayRecords();
     var markers = <CircleMarker>[];
     var max = 0;
     for(var record in records) {
