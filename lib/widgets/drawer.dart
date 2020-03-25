@@ -23,7 +23,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
       children: <Widget>[
         DrawerHeader(
           child: Center(
-            child: Text('CODIV-19 Italia [${date}]'),
+            child: Text('CODIV-19 Italia [$date]'),
           ),
         ),
         ListTile(
