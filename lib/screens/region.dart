@@ -11,6 +11,19 @@ class RegionPage extends StatefulWidget {
   _RegionState createState() => _RegionState();
 }
 
+class VerticalText extends StatelessWidget {
+  const VerticalText(this.data);
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    return RotatedBox(
+      quarterTurns: 3,
+      child: Text(data, textAlign: TextAlign.center),
+    );
+  }
+}
+
 class _RegionState extends State<RegionPage> {
   String region;
   var records = <Record>[];
@@ -96,20 +109,21 @@ class _RegionState extends State<RegionPage> {
               child: new PaginatedDataTable(
                 rowsPerPage: 10,
                 header: Text("Data"),
-                columnSpacing: 10.0,
+                columnSpacing: 12.0,
                 dataRowHeight: 20.0,
+                headingRowHeight: 120.0,
                 columns: [
-                  DataColumn(label: const Text('Data')),
-                  DataColumn(label: const Text('Ricoverati'), numeric: true),
-                  DataColumn(label: const Text('TI'), numeric: true),
-                  DataColumn(label: const Text("Ospedale"), numeric: true),
-                  DataColumn(label: const Text('Isolamento'), numeric: true),
-                  DataColumn(label: const Text('Positivi'), numeric: true),
-                  DataColumn(label: const Text('Nuovi positivi'), numeric: true),
-                  DataColumn(label: const Text('Guariti'), numeric: true),
-                  DataColumn(label: const Text('Morti'), numeric: true),
-                  DataColumn(label: const Text('Totale casi'), numeric: true),
-                  DataColumn(label: const Text('Tamponi'), numeric: true),
+                  DataColumn(label: const VerticalText('Data'), numeric: true),
+                  DataColumn(label: const VerticalText('Ricoverati\ncon sintomi'), numeric: true),
+                  DataColumn(label: const VerticalText('Terapia\nintensiva'), numeric: true),
+                  DataColumn(label: const VerticalText("Totale\nopspedalizzati"), numeric: true),
+                  DataColumn(label: const VerticalText('In isolamento\ndomiciliare'), numeric: true),
+                  DataColumn(label: const VerticalText('Totale attualmente\npositivi'), numeric: true),
+                  DataColumn(label: const VerticalText('Nuovi attualmente\npositivi'), numeric: true),
+                  DataColumn(label: const VerticalText('Dimessi\no guariti'), numeric: true),
+                  DataColumn(label: const VerticalText('Deceduti'), numeric: true),
+                  DataColumn(label: const VerticalText('Totale casi'), numeric: true),
+                  DataColumn(label: const VerticalText('Tamponi'), numeric: true),
                 ],
                 source: _rows,
               ),
