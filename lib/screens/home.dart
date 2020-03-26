@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -43,13 +42,13 @@ class _HomePageState extends State<HomePage> {
     } else { // start
       setState(() => animating = true);
       for (var item in days.asMap().entries) {
-        new Future.delayed(Duration(milliseconds: 200 * item.key), () {
+        new Future.delayed(Duration(milliseconds: 150 * item.key), () {
           if (!animating) {
             return;
           }
           setState(() {
             day = item.value;
-            if (item.key == days.last) {
+            if (day == days.last) {
               animating = false;
             }
           });
@@ -78,6 +77,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+
     return Scaffold(
       appBar: AppBar(title: Text('CODIV-19 Italia ')),
       drawer: buildDrawer(context, HomePage.route),
@@ -96,12 +96,12 @@ class _HomePageState extends State<HomePage> {
             Flexible(
               child: FlutterMap(
                 options: MapOptions(
-                  center: LatLng(42.088, 12.564),
+                  center: LatLng(41.777545, 12.881348),
                   zoom: 5.0,
-
-//                  swPanBoundary: LatLng(56.6877, 11.5089),
-//                  nePanBoundary: LatLng(56.7378, 11.6644),
-
+                  maxZoom: 7.0,
+                  minZoom: 5.0,
+                  nePanBoundary: LatLng(47.769334, 18.931354),
+                  swPanBoundary: LatLng(35.170229, 6.809863),
                 ),
                 layers: [
                   TileLayerOptions(
