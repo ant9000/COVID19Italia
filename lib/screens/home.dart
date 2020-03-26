@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -15,27 +16,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String date;
-  var markers = <CircleMarker>[];
+  DateTime day;
+  double max;
+  var animating = false;
 
-  computeStep(List<Record> records){
-    final formatter = new DateFormat('dd/MM/yyyy');
-    double tot = 0;
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    var data = Provider.of<COVID19DataModel>(context);
+    day = data.lastDay();
+    var records = data.getDayRecords(day);
     for(var record in records) {
       if(record.denominazioneRegione == "ITALIA"){
-        tot = record.totaleAttualmentePositivi.toDouble();
+        max = record.totaleAttualmentePositivi.toDouble();
         break;
       }
     }
-    setState(() {
-      date = records.isNotEmpty ? formatter.format(records[0].data) : '';
-      print("[$date]");
-      markers.clear();
-      for(var record in records) {
+  }
+
+  animate(COVID19DataModel data){
+    var days = data.getDays();
+    if(animating) { // stop
+      setState(() {
+        day = days.last;
+        animating = false;
+      });
+    } else { // start
+      setState(() => animating = true);
+      for (var item in days.asMap().entries) {
+        new Future.delayed(Duration(milliseconds: 200 * item.key), () {
+          if (!animating) {
+            return;
+          }
+          setState(() {
+            day = item.value;
+            if (item.key == days.last) {
+              animating = false;
+            }
+          });
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var data = Provider.of<COVID19DataModel>(context);
+    var markers = <CircleMarker>[];
+    var date = "";
+    if(day != null) {
+      final formatter = new DateFormat('dd/MM/yyyy');
+      date = formatter.format(day);
+      for (var record in data.getDayRecords(day)) {
         if (record.denominazioneRegione != "ITALIA") {
           var casi = record.totaleAttualmentePositivi.toDouble();
-          var r = tot > 0 ? 100 * log(1 + casi / tot) : 0.0;
-          print("${record.denominazioneRegione} $r");
+          var r = max > 0 ? 100 * log(1 + casi / max) : 0.0;
           markers.add(CircleMarker(
             radius: r,
             point: LatLng(record.lat, record.long),
@@ -43,27 +77,13 @@ class _HomePageState extends State<HomePage> {
           ));
         }
       }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var data = Provider.of<COVID19DataModel>(context);
-    var records = data.lastDayRecords();
-    computeStep(records);
-
+    }
     return Scaffold(
       appBar: AppBar(title: Text('CODIV-19 Italia ')),
       drawer: buildDrawer(context, HomePage.route),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.play_arrow),
-        onPressed: () {
-// TODO: animare il raggio dei markers
-//          for(var day in data.getDays()){
-//            computeStep(data.getDayRecords(day));
-//            sleep(Duration(milliseconds: 500));
-//          }
-        },
+        child: Icon(animating ? Icons.stop : Icons.play_arrow),
+        onPressed: () => animate(data),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
@@ -78,10 +98,10 @@ class _HomePageState extends State<HomePage> {
                 options: MapOptions(
                   center: LatLng(42.088, 12.564),
                   zoom: 5.0,
-/*
-                  swPanBoundary: LatLng(56.6877, 11.5089),
-                  nePanBoundary: LatLng(56.7378, 11.6644),
-*/
+
+//                  swPanBoundary: LatLng(56.6877, 11.5089),
+//                  nePanBoundary: LatLng(56.7378, 11.6644),
+
                 ),
                 layers: [
                   TileLayerOptions(
