@@ -105,9 +105,9 @@ class COVID19DataModel extends ChangeNotifier {
 
   List<DateTime> getDays() { return List.unmodifiable(_byDate.keys); }
   List<Record> getRegions() {
-    return List.unmodifiable(
-        _byRegion.keys.map((r) => _records[_byRegion[r].first])
-    );
+    var regions = []..addAll(_byRegion.keys.where((r) => r != "ITALIA"));
+    if(_byRegion.keys.contains("ITALIA")){ regions.insert(0, "ITALIA"); }
+    return List.unmodifiable(regions.map((r) => _records[_byRegion[r].first]));
   }
 
   DateTime lastDay() { return _byDate.keys.isNotEmpty ? _byDate.keys.last : null; }

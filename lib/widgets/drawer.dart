@@ -13,6 +13,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
   var day = data.lastDay();
   var date = day != null ? formatter.format(day) : '';
   var tiles = <ListTile>[];
+
   for(var r in regions){
     tiles.add(ListTile(
       title: Text(r.denominazioneRegione),

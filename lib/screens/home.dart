@@ -76,7 +76,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     var markers = <CircleMarker>[];
     final formatter = new DateFormat('dd/MM/yyyy');
     var days = data.getDays();
-    var date = formatter.format(days[day.value]);
+    var header = '';
+    if (day.value >= 0.0 && day.value < days.length) {
+      header = 'Positivi al giorno ${formatter.format(days[day.value])}';
+    }
 
     for (var region in data.getRegions()) {
       if (region.denominazioneRegione != "ITALIA") {
@@ -101,7 +104,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           children: [
             Padding(
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: Text('Positivi al giorno $date'),
+              child: Text(header),
             ),
             Flexible(
               child: FlutterMap(
