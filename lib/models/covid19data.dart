@@ -104,6 +104,11 @@ class COVID19DataModel extends ChangeNotifier {
   }
 
   List<DateTime> getDays() { return List.unmodifiable(_byDate.keys); }
+  List<Record> getRegions() {
+    return List.unmodifiable(
+        _byRegion.keys.map((r) => _records[_byRegion[r].first])
+    );
+  }
 
   DateTime lastDay() { return _byDate.keys.isNotEmpty ? _byDate.keys.last : null; }
 
@@ -116,8 +121,16 @@ class COVID19DataModel extends ChangeNotifier {
 
   List<Record> lastDayRecords() { return getDayRecords(lastDay()); }
 
-  List<Record> getRegion(var region){
+  List<Record> getRegionRecords(String region){
     return List.unmodifiable(_byRegion[region].map((idx) => _records[idx]));
+  }
+
+  int getLastPositives() {
+    if(_byRegion.containsKey("ITALIA") && _byRegion["ITALIA"].isNotEmpty) {
+      var idx = _byRegion["ITALIA"].last;
+      return _records[idx].totaleAttualmentePositivi;
+    }
+    return null;
   }
 }
 

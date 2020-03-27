@@ -40,7 +40,7 @@ class _RegionState extends State<RegionPage> {
     if(_region == region){ return; }
     region = _region;
     var data = Provider.of<COVID19DataModel>(context);
-    records = data.getRegion(region);
+    records = data.getRegionRecords(region);
     setState(() {
       seriesList = [
         new charts.Series<Record, DateTime>(

@@ -14,46 +14,58 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   DateTime day;
   double max;
-  var animating = false;
+  AnimationController animationController;
+  Map<String, Animation<double>> radiuses = {};
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(duration: Duration(seconds: 3), vsync: this)
+    ..addListener( () {
+       setState(() {
+         //
+       });
+    }) ;
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   didChangeDependencies() {
     super.didChangeDependencies();
     var data = Provider.of<COVID19DataModel>(context);
     day = data.lastDay();
-    var records = data.getDayRecords(day);
-    for(var record in records) {
-      if(record.denominazioneRegione == "ITALIA"){
-        max = record.totaleAttualmentePositivi.toDouble();
-        break;
+    max = data.getLastPositives()?.toDouble();
+    for (var region in data.getRegions()) {
+      var items = <TweenSequenceItem<double>>[];
+      var r0 = 0.0;
+      for (var record in data.getRegionRecords(region.denominazioneRegione)) {
+        var r1 = max > 0 ? 100 * log(1 + record.totaleAttualmentePositivi.toDouble() / max) : 0.0;
+        items.add(TweenSequenceItem<double>(tween: Tween<double>(begin: r0, end: r1), weight: 1.0));
+        r0 = r1;
       }
+      radiuses[region.denominazioneRegione] = TweenSequence(items).animate(animationController);
     }
+    animationController.value = animationController.upperBound;
   }
 
-  animate(COVID19DataModel data){
-    var days = data.getDays();
-    if(animating) { // stop
-      setState(() {
-        day = days.last;
-        animating = false;
-      });
-    } else { // start
-      setState(() => animating = true);
-      for (var item in days.asMap().entries) {
-        new Future.delayed(Duration(milliseconds: 150 * item.key), () {
-          if (!animating) {
-            return;
-          }
-          setState(() {
-            day = item.value;
-            if (day == days.last) {
-              animating = false;
-            }
-          });
-        });
-      }
+  animate(COVID19DataModel data) async {
+    if (!animationController.isAnimating) {
+      try {
+        var days = data.getDays();
+        animationController.value = animationController.lowerBound;
+        animationController.duration = Duration(milliseconds: 100 * days.length);
+        await animationController.forward().orCancel;
+      } on TickerCanceled {}
+    } else {
+      animationController.stop();
+      animationController.value = animationController.upperBound;
     }
   }
 
@@ -61,20 +73,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var data = Provider.of<COVID19DataModel>(context);
     var markers = <CircleMarker>[];
+
+    // TODO: animate date
     var date = "";
     if(day != null) {
       final formatter = new DateFormat('dd/MM/yyyy');
       date = formatter.format(day);
-      for (var record in data.getDayRecords(day)) {
-        if (record.denominazioneRegione != "ITALIA") {
-          var casi = record.totaleAttualmentePositivi.toDouble();
-          var r = max > 0 ? 100 * log(1 + casi / max) : 0.0;
-          markers.add(CircleMarker(
-            radius: r,
-            point: LatLng(record.lat, record.long),
-            color: Colors.red,
-          ));
-        }
+    }
+
+    for (var region in data.getRegions()) {
+      if (region.denominazioneRegione != "ITALIA") {
+        markers.add(CircleMarker(
+          radius: radiuses[region.denominazioneRegione].value,
+          point: LatLng(region.lat, region.long),
+          color: Colors.red,
+        ));
       }
     }
 
@@ -82,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: Text('CODIV-19 Italia ')),
       drawer: buildDrawer(context, HomePage.route),
       floatingActionButton: FloatingActionButton(
-        child: Icon(animating ? Icons.stop : Icons.play_arrow),
+        child: Icon(animationController.isAnimating ? Icons.stop : Icons.play_arrow),
         onPressed: () => animate(data),
       ),
       body: Padding(

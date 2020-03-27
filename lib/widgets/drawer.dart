@@ -8,15 +8,16 @@ import '../models/covid19data.dart';
 Drawer buildDrawer(BuildContext context, String currentRoute) {
   var data = Provider.of<COVID19DataModel>(context);
   String region = ModalRoute.of(context).settings.arguments;
-  var records = data.lastDayRecords();
+  var regions = data.getRegions();
   final formatter = new DateFormat('dd/MM/yyyy');
-  var date = records.isNotEmpty ? formatter.format(records[0].data) : '';
+  var day = data.lastDay();
+  var date = day != null ? formatter.format(day) : '';
   var tiles = <ListTile>[];
-  for(var record in records){
+  for(var r in regions){
     tiles.add(ListTile(
-      title: Text(record.denominazioneRegione),
-      selected: currentRoute == RegionPage.route && region == record.denominazioneRegione,
-      onTap: () => Navigator.pushNamed(context, RegionPage.route, arguments: record.denominazioneRegione),
+      title: Text(r.denominazioneRegione),
+      selected: currentRoute == RegionPage.route && region == r.denominazioneRegione,
+      onTap: () => Navigator.pushNamed(context, RegionPage.route, arguments: r.denominazioneRegione),
     ));
   }
 
