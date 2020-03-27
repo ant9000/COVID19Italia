@@ -15,10 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  DateTime day;
-  double max;
   AnimationController animationController;
   Map<String, Animation<double>> radiuses = {};
+  Animation<int> day;
 
   @override
   void initState() {
@@ -40,8 +39,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   didChangeDependencies() {
     super.didChangeDependencies();
     var data = Provider.of<COVID19DataModel>(context);
-    day = data.lastDay();
-    max = data.getLastPositives()?.toDouble();
+    var days = data.getDays();
+    day = IntTween(begin: 0, end: days.length-1).animate(animationController);
+
+    double max = data.getLastPositives()?.toDouble();
     for (var region in data.getRegions()) {
       var items = <TweenSequenceItem<double>>[];
       var r0 = 0.0;
@@ -73,13 +74,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     var data = Provider.of<COVID19DataModel>(context);
     var markers = <CircleMarker>[];
-
-    // TODO: animate date
-    var date = "";
-    if(day != null) {
-      final formatter = new DateFormat('dd/MM/yyyy');
-      date = formatter.format(day);
-    }
+    final formatter = new DateFormat('dd/MM/yyyy');
+    var days = data.getDays();
+    var date = formatter.format(days[day.value]);
 
     for (var region in data.getRegions()) {
       if (region.denominazioneRegione != "ITALIA") {
