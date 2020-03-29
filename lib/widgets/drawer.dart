@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../screens/home.dart';
 import '../screens/region.dart';
+import '../screens/credits.dart';
 import '../models/covid19data.dart';
 
 Drawer buildDrawer(BuildContext context, String currentRoute) {
@@ -31,11 +32,18 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
           ),
         ),
         ListTile(
-          title: const Text('Home'),
+          title: const Text(HomePage.title),
           selected: currentRoute == HomePage.route,
           onTap: () => Navigator.pushReplacementNamed(context, HomePage.route),
         ),
+        Divider(),
         ... tiles,
+        Divider(),
+        ListTile(
+          title: const Text(CreditsPage.title),
+          selected: currentRoute == CreditsPage.route,
+          onTap: () => Navigator.pushReplacementNamed(context, CreditsPage.route),
+        )
       ],
     ),
   );

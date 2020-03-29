@@ -10,6 +10,8 @@ import '../models/covid19data.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = '/';
+  static const String title = "Home";
+
   @override
   _HomePageState createState() => _HomePageState();
 }

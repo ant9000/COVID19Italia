@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './screens/home.dart';
 import './screens/region.dart';
+import './screens/credits.dart';
 import './models/covid19data.dart';
 
 void main() => runApp(MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           HomePage.route: (context) => HomePage(),
           RegionPage.route: (context) => RegionPage(),
+          CreditsPage.route: (context) => CreditsPage(),
         },
       ),
     );

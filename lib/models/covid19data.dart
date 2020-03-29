@@ -16,8 +16,9 @@ class COVID19DataModel extends ChangeNotifier {
     fetchData();
   }
 
-  fetchData ({bool ignorecache = false}) async {
+  Future<String> fetchData ({bool ignorecache = false}) async {
     final dir = await getApplicationSupportDirectory();
+    String result = "";
 
     var jsonData = "";
     var jsonFile = File('${dir.path}/dpc-covid19-ita-regioni.json');
@@ -30,12 +31,14 @@ class COVID19DataModel extends ChangeNotifier {
           var stale = (now.millisecondsSinceEpoch >= sixthirthyPM.millisecondsSinceEpoch) &&
               (jsonFile.lastModifiedSync().millisecondsSinceEpoch < sixthirthyPM.millisecondsSinceEpoch);
           if(!stale) {
-            print("FROM CACHE");
+            result = "FROM CACHE";
+            print(result);
             jsonData = jsonFile.readAsStringSync();
           }
         }
       } catch (e) {
-        print("IO ERROR: $e");
+        result = "IO ERROR: $e";
+        print(result);
       }
     }
 
@@ -43,14 +46,17 @@ class COVID19DataModel extends ChangeNotifier {
       try {
         var response = await http.get(url);
         if (response.statusCode == 200) {
-          print("FETCHED FROM GITHUB");
+          result = "FETCHED FROM GITHUB";
+          print(result);
           jsonData = response.body;
           jsonFile.writeAsStringSync(jsonData);
         } else {
-          print("HTTP ERROR: ${response.statusCode}");
+          result = "HTTP ERROR: ${response.statusCode}";
+          print(result);
         }
       }catch (e){
-        print("TCP ERROR: $e");
+        result = "TCP ERROR: $e";
+        print(result);
       }
     }
 
@@ -101,6 +107,8 @@ class COVID19DataModel extends ChangeNotifier {
     }
 
     notifyListeners();
+
+    return result;
   }
 
   List<DateTime> getDays() { return List.unmodifiable(_byDate.keys); }
