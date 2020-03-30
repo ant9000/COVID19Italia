@@ -31,7 +31,7 @@ class COVID19DataModel extends ChangeNotifier {
           var stale = (now.millisecondsSinceEpoch >= sixthirthyPM.millisecondsSinceEpoch) &&
               (jsonFile.lastModifiedSync().millisecondsSinceEpoch < sixthirthyPM.millisecondsSinceEpoch);
           if(!stale) {
-            result = "FROM CACHE";
+            result = "CACHE";
             print(result);
             jsonData = jsonFile.readAsStringSync();
           }
@@ -46,7 +46,7 @@ class COVID19DataModel extends ChangeNotifier {
       try {
         var response = await http.get(url);
         if (response.statusCode == 200) {
-          result = "FETCHED FROM GITHUB";
+          result = "GITHUB";
           print(result);
           jsonData = response.body;
           jsonFile.writeAsStringSync(jsonData);

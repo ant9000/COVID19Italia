@@ -15,6 +15,7 @@ dependencies:
   flutter_map_marker_cluster: any
   http: any
   charts_flutter: any
+  url_launcher: any
 
 dev_dependencies:
   flutter_test:
