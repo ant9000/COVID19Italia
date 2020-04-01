@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import '../widgets/drawer.dart';
 import '../models/covid19data.dart';
@@ -27,13 +27,9 @@ class VerticalText extends StatelessWidget {
 class _RegionState extends State<RegionPage> {
   String region;
   var records = <Record>[];
-  List<charts.Series<Record, DateTime>> seriesList = [];
+  var seriesList = <LineSeries<Record, DateTime>>[];
   _RecordsDataSource _rows;
-  final colors = {
-    'positivi': charts.MaterialPalette.blue.shadeDefault,
-    'guariti':  charts.MaterialPalette.green.shadeDefault,
-    'deceduti': charts.MaterialPalette.red.shadeDefault,
-  };
+  var logScale = false;
 
   prepareData(context){
     var _region = ModalRoute.of(context).settings.arguments;
@@ -43,26 +39,26 @@ class _RegionState extends State<RegionPage> {
     records = data.getRegionRecords(region);
     setState(() {
       seriesList = [
-        new charts.Series<Record, DateTime>(
-          id: 'Attualmente positivi',
-          colorFn: (_, __) => colors['positivi'],
-          domainFn: (Record record, _) => record.data,
-          measureFn: (Record record, _) => record.totaleAttualmentePositivi,
-          data: records,
+        LineSeries<Record, DateTime>(
+            name: 'Positivi',
+            dataSource: records,
+            xValueMapper: (Record record, _) => record.data,
+            yValueMapper: (Record record, _) => record.totalePositivi,
+            color: Colors.lightBlue,
         ),
-        new charts.Series<Record, DateTime>(
-          id: 'Guariti',
-          colorFn: (_, __) => colors['guariti'],
-          domainFn: (Record record, _) => record.data,
-          measureFn: (Record record, _) => record.dimessiGuariti,
-          data: records,
+        LineSeries<Record, DateTime>(
+            name: 'Guariti',
+            dataSource: records,
+            xValueMapper: (Record record, _) => record.data,
+            yValueMapper: (Record record, _) => record.dimessiGuariti,
+            color: Colors.lightGreen,
         ),
-        new charts.Series<Record, DateTime>(
-          id: 'Morti',
-          colorFn: (_, __) => colors['deceduti'],
-          domainFn: (Record record, _) => record.data,
-          measureFn: (Record record, _) => record.deceduti,
-          data: records,
+        LineSeries<Record, DateTime>(
+            name: 'Deceduti',
+            dataSource: records,
+            xValueMapper: (Record record, _) => record.data,
+            yValueMapper: (Record record, _) => record.deceduti,
+            color: Colors.black,
         ),
       ];
       _rows = _RecordsDataSource(records);
@@ -72,15 +68,12 @@ class _RegionState extends State<RegionPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_rows == null) {
-      prepareData(context);
-    }
+    prepareData(context);
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    prepareData(context);
 
     return Scaffold(
       appBar: AppBar(title: Text('$region')),
@@ -92,22 +85,36 @@ class _RegionState extends State<RegionPage> {
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: new SizedBox(
                 height: (size.width > size.height ? 0.7 : 0.5) *size.height,
-                child: new charts.TimeSeriesChart(
-                  seriesList,
-                  behaviors: [new charts.SeriesLegend(
-                    horizontalFirst: false,
-                    cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
-                    showMeasures: true,
-                    measureFormatter: (num value) {
-                      return value == null ? '-' : '${value.toInt()}';
-                    },
-                  )],
-                ),
+                child: SfCartesianChart(
+                  legend: Legend(isVisible: true, position: LegendPosition.top),
+                  primaryXAxis: DateTimeAxis(
+                      edgeLabelPlacement: EdgeLabelPlacement.shift,
+                  ),
+                  primaryYAxis: (
+                      logScale ?
+                        LogarithmicAxis(interactiveTooltip: InteractiveTooltip(enable: false))
+                      :
+                        NumericAxis(interactiveTooltip: InteractiveTooltip(enable: false))
+                  ),
+                  series: seriesList,
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  zoomPanBehavior: ZoomPanBehavior(
+                        enablePinching: true, zoomMode: ZoomMode.xy, enablePanning: true
+                  ),
+                )
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, bottom: 24.0),
+              child: SwitchListTile(
+                title: const Text("Use logarithmic scale"),
+                value: logScale,
+                onChanged: (value) { setState(() => logScale = value); },
               ),
             ),
             new Scrollbar(
               child: new PaginatedDataTable(
-                rowsPerPage: 10,
+                rowsPerPage: 20,
                 header: Text("Data"),
                 columnSpacing: 12.0,
                 dataRowHeight: 20.0,
@@ -118,8 +125,9 @@ class _RegionState extends State<RegionPage> {
                   DataColumn(label: const VerticalText('Terapia\nintensiva'), numeric: true),
                   DataColumn(label: const VerticalText("Totale\nopspedalizzati"), numeric: true),
                   DataColumn(label: const VerticalText('In isolamento\ndomiciliare'), numeric: true),
-                  DataColumn(label: const VerticalText('Totale attualmente\npositivi'), numeric: true),
-                  DataColumn(label: const VerticalText('Nuovi attualmente\npositivi'), numeric: true),
+                  DataColumn(label: const VerticalText('Totale\npositivi'), numeric: true),
+                  DataColumn(label: const VerticalText('Nuovi\npositivi'), numeric: true),
+                  DataColumn(label: const VerticalText('Variazione totale\npositivi'), numeric: true),
                   DataColumn(label: const VerticalText('Dimessi\no guariti'), numeric: true),
                   DataColumn(label: const VerticalText('Deceduti'), numeric: true),
                   DataColumn(label: const VerticalText('Totale casi'), numeric: true),
@@ -152,8 +160,9 @@ class _RecordsDataSource extends DataTableSource {
           DataCell(Text('${record.terapiaIntensiva}')),
           DataCell(Text('${record.totaleOspedalizzati}')),
           DataCell(Text('${record.isolamentoDomiciliare}')),
-          DataCell(Text('${record.totaleAttualmentePositivi}')),
-          DataCell(Text('${record.nuoviAttualmentePositivi}')),
+          DataCell(Text('${record.totalePositivi}')),
+          DataCell(Text('${record.nuoviPositivi}')),
+          DataCell(Text('${record.variazioneTotalePositivi}')),
           DataCell(Text('${record.dimessiGuariti}')),
           DataCell(Text('${record.deceduti}')),
           DataCell(Text('${record.totaleCasi}')),

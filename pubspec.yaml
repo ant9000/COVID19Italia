@@ -14,7 +14,8 @@ dependencies:
   flutter_map: any
   flutter_map_marker_cluster: any
   http: any
-  charts_flutter: any
+#  charts_flutter: any
+  syncfusion_flutter_charts: ^18.1.36
   url_launcher: any
 
 dev_dependencies:
@@ -24,6 +25,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - syncfusion.lic
 
 flutter_icons:
   android: "launcher_icon"
