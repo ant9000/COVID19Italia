@@ -72,7 +72,6 @@ class COVID19DataModel extends ChangeNotifier {
       _byDate[record.data].add(idx);
       if (!_byRegion.containsKey(record.denominazioneRegione)) { _byRegion[record.denominazioneRegione] = []; }
       _byRegion[record.denominazioneRegione].add(idx);
- //     print(json);
     }
 
     print("_records: ${_records.length}");
@@ -90,8 +89,9 @@ class COVID19DataModel extends ChangeNotifier {
         terapiaIntensiva:          0,
         totaleOspedalizzati:       0,
         isolamentoDomiciliare:     0,
-        totaleAttualmentePositivi: 0,
-        nuoviAttualmentePositivi:  0,
+        totalePositivi:            0,
+        variazioneTotalePositivi:  0,
+        nuoviPositivi:             0,
         dimessiGuariti:            0,
         deceduti:                  0,
         totaleCasi:                0,
@@ -136,7 +136,7 @@ class COVID19DataModel extends ChangeNotifier {
   int getLastPositives() {
     if(_byRegion.containsKey("ITALIA") && _byRegion["ITALIA"].isNotEmpty) {
       var idx = _byRegion["ITALIA"].last;
-      return _records[idx].totaleAttualmentePositivi;
+      return _records[idx].totalePositivi;
     }
     return null;
   }
@@ -154,8 +154,9 @@ class Record {
   final int      terapiaIntensiva;
   final int      totaleOspedalizzati;
   final int      isolamentoDomiciliare;
-  final int      totaleAttualmentePositivi;
-  final int      nuoviAttualmentePositivi;
+  final int      totalePositivi;
+  final int      variazioneTotalePositivi;
+  final int      nuoviPositivi;
   final int      dimessiGuariti;
   final int      deceduti;
   final int      totaleCasi;
@@ -172,8 +173,9 @@ class Record {
     this.terapiaIntensiva,
     this.totaleOspedalizzati,
     this.isolamentoDomiciliare,
-    this.totaleAttualmentePositivi,
-    this.nuoviAttualmentePositivi,
+    this.totalePositivi,
+    this.variazioneTotalePositivi,
+    this.nuoviPositivi,
     this.dimessiGuariti,
     this.deceduti,
     this.totaleCasi,
@@ -191,8 +193,9 @@ class Record {
     terapiaIntensiva:          json["terapia_intensiva"],
     totaleOspedalizzati:       json["totale_ospedalizzati"],
     isolamentoDomiciliare:     json["isolamento_domiciliare"],
-    totaleAttualmentePositivi: json["totale_attualmente_positivi"],
-    nuoviAttualmentePositivi:  json["nuovi_attualmente_positivi"],
+    totalePositivi:            json["totale_positivi"],
+    variazioneTotalePositivi:  json["variazione_totale_positivi"],
+    nuoviPositivi:             json["nuovi_positivi"],
     dimessiGuariti:            json["dimessi_guariti"],
     deceduti:                  json["deceduti"],
     totaleCasi:                json["totale_casi"],
@@ -203,7 +206,7 @@ class Record {
   String toString() {
     return
       "[${this.data}] ${this.denominazioneRegione}: " +
-          "positivi: ${this.totaleAttualmentePositivi} " +
+          "positivi: ${this.totalePositivi} " +
           "guariti: ${this.dimessiGuariti} " +
           "deceduti: ${this.deceduti}";
   }
@@ -220,8 +223,9 @@ class Record {
       terapiaIntensiva:          this.terapiaIntensiva + other.terapiaIntensiva,
       totaleOspedalizzati:       this.totaleOspedalizzati + other.totaleOspedalizzati,
       isolamentoDomiciliare:     this.isolamentoDomiciliare + other.isolamentoDomiciliare,
-      totaleAttualmentePositivi: this.totaleAttualmentePositivi + other.totaleAttualmentePositivi,
-      nuoviAttualmentePositivi:  this.nuoviAttualmentePositivi + other.nuoviAttualmentePositivi,
+      totalePositivi:            this.totalePositivi + other.totalePositivi,
+      nuoviPositivi:             this.nuoviPositivi + other.nuoviPositivi,
+      variazioneTotalePositivi:  this.variazioneTotalePositivi + other.variazioneTotalePositivi,
       dimessiGuariti:            this.dimessiGuariti + other.dimessiGuariti,
       deceduti:                  this.deceduti + other.deceduti,
       totaleCasi:                this.totaleCasi + other.totaleCasi,

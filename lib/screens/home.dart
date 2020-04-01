@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       var items = <TweenSequenceItem<double>>[];
       var r0 = 0.0;
       for (var record in data.getRegionRecords(region.denominazioneRegione)) {
-        var r1 = max > 0 ? 100 * log(1 + record.totaleAttualmentePositivi.toDouble() / max) : 0.0;
+        var r1 = max > 0 ? 100 * log(1 + record.totalePositivi.toDouble() / max) : 0.0;
         items.add(TweenSequenceItem<double>(tween: Tween<double>(begin: r0, end: r1), weight: 1.0));
         r0 = r1;
       }
