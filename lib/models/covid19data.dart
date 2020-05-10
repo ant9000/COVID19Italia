@@ -96,6 +96,8 @@ class COVID19DataModel extends ChangeNotifier {
         deceduti:                  0,
         totaleCasi:                0,
         tamponi:                   0,
+        casiTestati:               0,
+        noteIt:                    "",
       );
       for (var idx in _byDate[d]) {
         record = record + _records[idx];
@@ -161,6 +163,8 @@ class Record {
   final int      deceduti;
   final int      totaleCasi;
   final int      tamponi;
+  final int      casiTestati;
+  final String   noteIt;
 
   Record({
     this.data,
@@ -180,6 +184,8 @@ class Record {
     this.deceduti,
     this.totaleCasi,
     this.tamponi,
+    this.casiTestati,
+    this.noteIt,
   });
 
   factory Record.fromJson(Map<String, dynamic> json) => Record(
@@ -200,6 +206,8 @@ class Record {
     deceduti:                  json["deceduti"],
     totaleCasi:                json["totale_casi"],
     tamponi:                   json["tamponi"],
+    casiTestati:               json["casi_testati"] != null ? json["casi_testati"] : 0,
+    noteIt:                    json["note_it"] != null ? json["note_it"] : "",
   );
 
   @override
@@ -230,6 +238,8 @@ class Record {
       deceduti:                  this.deceduti + other.deceduti,
       totaleCasi:                this.totaleCasi + other.totaleCasi,
       tamponi:                   this.tamponi + other.tamponi,
+      casiTestati:               this.casiTestati + other.casiTestati,
+      noteIt:                    "",
     );
   }
 }

@@ -132,6 +132,8 @@ class _RegionState extends State<RegionPage> {
                   DataColumn(label: const VerticalText('Deceduti'), numeric: true),
                   DataColumn(label: const VerticalText('Totale casi'), numeric: true),
                   DataColumn(label: const VerticalText('Tamponi'), numeric: true),
+                  DataColumn(label: const VerticalText('Casi Testati'), numeric: true),
+                  DataColumn(label: const VerticalText('Note')),
                 ],
                 source: _rows,
               ),
@@ -167,6 +169,8 @@ class _RecordsDataSource extends DataTableSource {
           DataCell(Text('${record.deceduti}')),
           DataCell(Text('${record.totaleCasi}')),
           DataCell(Text('${record.tamponi}')),
+          DataCell(Text('${record.casiTestati}')),
+          DataCell(Text('${record.noteIt}')),
       ],
     );
   }
