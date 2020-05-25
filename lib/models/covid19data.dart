@@ -27,9 +27,10 @@ class COVID19DataModel extends ChangeNotifier {
       try {
         if (jsonFile.existsSync()) {
           var now = new DateTime.now();
-          var sixthirthyPM = new DateTime(now.year, now.month, now.day, 18, 30);
-          var stale = (now.millisecondsSinceEpoch >= sixthirthyPM.millisecondsSinceEpoch) &&
-              (jsonFile.lastModifiedSync().millisecondsSinceEpoch < sixthirthyPM.millisecondsSinceEpoch);
+          var sixthirtyPM = new DateTime(now.year, now.month, now.day, 18, 30);
+          var stale = ((now.millisecondsSinceEpoch >= sixthirtyPM.millisecondsSinceEpoch) &&
+              (jsonFile.lastModifiedSync().millisecondsSinceEpoch < sixthirtyPM.millisecondsSinceEpoch)) ||
+              (now.millisecondsSinceEpoch - jsonFile.lastModifiedSync().millisecondsSinceEpoch >= 24*60*60*1000);
           if(!stale) {
             result = "CACHE";
             print(result);
