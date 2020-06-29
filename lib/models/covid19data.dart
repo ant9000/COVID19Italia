@@ -98,7 +98,7 @@ class COVID19DataModel extends ChangeNotifier {
         totaleCasi:                0,
         tamponi:                   0,
         casiTestati:               0,
-        noteIt:                    "",
+        note:                      "",
       );
       for (var idx in _byDate[d]) {
         record = record + _records[idx];
@@ -165,7 +165,7 @@ class Record {
   final int      totaleCasi;
   final int      tamponi;
   final int      casiTestati;
-  final String   noteIt;
+  final String   note;
 
   Record({
     this.data,
@@ -186,16 +186,16 @@ class Record {
     this.totaleCasi,
     this.tamponi,
     this.casiTestati,
-    this.noteIt,
+    this.note,
   });
 
   factory Record.fromJson(Map<String, dynamic> json) => Record(
     data:                      DateTime.parse(json["data"]),
     stato:                     json["stato"],
-    codiceRegione:             json["codice_regione"],
+    codiceRegione:             int.parse(json["codice_regione"].toString()),
     denominazioneRegione:      json["denominazione_regione"],
-    lat:                       json["lat"],
-    long:                      json["long"],
+    lat:                       double.parse(json["lat"].toString()),
+    long:                      double.parse(json["long"].toString()),
     ricoveratiConSintomi:      json["ricoverati_con_sintomi"],
     terapiaIntensiva:          json["terapia_intensiva"],
     totaleOspedalizzati:       json["totale_ospedalizzati"],
@@ -208,7 +208,7 @@ class Record {
     totaleCasi:                json["totale_casi"],
     tamponi:                   json["tamponi"],
     casiTestati:               json["casi_testati"] != null ? json["casi_testati"] : 0,
-    noteIt:                    json["note_it"] != null ? json["note_it"] : "",
+    note:                      json["note"] != null ? json["note"] : "",
   );
 
   @override
@@ -240,7 +240,7 @@ class Record {
       totaleCasi:                this.totaleCasi + other.totaleCasi,
       tamponi:                   this.tamponi + other.tamponi,
       casiTestati:               this.casiTestati + other.casiTestati,
-      noteIt:                    "",
+      note:                      "",
     );
   }
 }

@@ -170,7 +170,7 @@ class _RecordsDataSource extends DataTableSource {
           DataCell(Text('${record.totaleCasi}')),
           DataCell(Text('${record.tamponi}')),
           DataCell(Text('${record.casiTestati}')),
-          DataCell(Text('${record.noteIt}')),
+          DataCell(Text('${record.note}')),
       ],
     );
   }
