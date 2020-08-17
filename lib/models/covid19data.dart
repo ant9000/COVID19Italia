@@ -5,6 +5,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:collection';
 
+double asDouble(var value){ return double.parse(value?.toString() ?? "0"); }
+int asInt(var value) { return asDouble(value).toInt(); }
+
 class COVID19DataModel extends ChangeNotifier {
   /* new data published once a day at  6PM */
   final url = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json';
@@ -192,23 +195,23 @@ class Record {
   factory Record.fromJson(Map<String, dynamic> json) => Record(
     data:                      DateTime.parse(json["data"]),
     stato:                     json["stato"],
-    codiceRegione:             int.parse(json["codice_regione"].toString()),
+    codiceRegione:             asInt(json["codice_regione"]),
     denominazioneRegione:      json["denominazione_regione"],
-    lat:                       double.parse(json["lat"].toString()),
-    long:                      double.parse(json["long"].toString()),
-    ricoveratiConSintomi:      json["ricoverati_con_sintomi"],
-    terapiaIntensiva:          json["terapia_intensiva"],
-    totaleOspedalizzati:       json["totale_ospedalizzati"],
-    isolamentoDomiciliare:     json["isolamento_domiciliare"],
-    totalePositivi:            json["totale_positivi"],
-    variazioneTotalePositivi:  json["variazione_totale_positivi"],
-    nuoviPositivi:             json["nuovi_positivi"],
-    dimessiGuariti:            json["dimessi_guariti"],
-    deceduti:                  json["deceduti"],
-    totaleCasi:                json["totale_casi"],
-    tamponi:                   json["tamponi"],
-    casiTestati:               json["casi_testati"] != null ? json["casi_testati"] : 0,
-    note:                      json["note"] != null ? json["note"] : "",
+    lat:                       asDouble(json["lat"]),
+    long:                      asDouble(json["long"]),
+    ricoveratiConSintomi:      asInt(json["ricoverati_con_sintomi"]),
+    terapiaIntensiva:          asInt(json["terapia_intensiva"]),
+    totaleOspedalizzati:       asInt(json["totale_ospedalizzati"]),
+    isolamentoDomiciliare:     asInt(json["isolamento_domiciliare"]),
+    totalePositivi:            asInt(json["totale_positivi"]),
+    variazioneTotalePositivi:  asInt(json["variazione_totale_positivi"]),
+    nuoviPositivi:             asInt(json["nuovi_positivi"]),
+    dimessiGuariti:            asInt(json["dimessi_guariti"]),
+    deceduti:                  asInt(json["deceduti"]),
+    totaleCasi:                asInt(json["totale_casi"]),
+    tamponi:                   asInt(json["tamponi"]),
+    casiTestati:               asInt(json["casi_testati"]),
+    note:                      json["note"] ?? "",
   );
 
   @override
