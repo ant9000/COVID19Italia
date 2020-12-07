@@ -84,25 +84,7 @@ class COVID19DataModel extends ChangeNotifier {
 
     _byRegion["ITALIA"] = [];
     for (var d in _byDate.keys) {
-      var record = Record(
-        data:                      d,
-        stato:                     "ITA",
-        codiceRegione:             0,
-        denominazioneRegione:      "ITALIA",
-        ricoveratiConSintomi:      0,
-        terapiaIntensiva:          0,
-        totaleOspedalizzati:       0,
-        isolamentoDomiciliare:     0,
-        totalePositivi:            0,
-        variazioneTotalePositivi:  0,
-        nuoviPositivi:             0,
-        dimessiGuariti:            0,
-        deceduti:                  0,
-        totaleCasi:                0,
-        tamponi:                   0,
-        casiTestati:               0,
-        note:                      "",
-      );
+      var record = Record.zero(d, 0, "ITALIA");
       for (var idx in _byDate[d]) {
         record = record + _records[idx];
       }
@@ -212,6 +194,28 @@ class Record {
     tamponi:                   asInt(json["tamponi"]),
     casiTestati:               asInt(json["casi_testati"]),
     note:                      json["note"] ?? "",
+  );
+
+  factory Record.zero(DateTime data, int codiceRegione, String denominazioneRegione) => Record(
+    data:                      data,
+    stato:                     "ITA",
+    codiceRegione:             codiceRegione,
+    denominazioneRegione:      denominazioneRegione,
+    lat:                       null,
+    long:                      null,
+    ricoveratiConSintomi:      0,
+    terapiaIntensiva:          0,
+    totaleOspedalizzati:       0,
+    isolamentoDomiciliare:     0,
+    totalePositivi:            0,
+    variazioneTotalePositivi:  0,
+    nuoviPositivi:             0,
+    dimessiGuariti:            0,
+    deceduti:                  0,
+    totaleCasi:                0,
+    tamponi:                   0,
+    casiTestati:               0,
+    note:                      "",
   );
 
   @override

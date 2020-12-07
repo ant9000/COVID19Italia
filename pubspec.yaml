@@ -1,27 +1,27 @@
 name: covid19italia
 description: COVID-19 Italia - Monitoraggio situazione
 
-version: 1.0.0+1
+version: 1.5.1
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^0.1.2
-  provider: ^3.0.0
+  cupertino_icons: any
+  provider: any
   flutter_map: any
   flutter_map_marker_cluster: any
   http: any
 #  charts_flutter: any
-  syncfusion_flutter_charts: ^18.1.36
+  syncfusion_flutter_charts: any
   url_launcher: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.7.3"
+  flutter_launcher_icons: any
 
 flutter:
   uses-material-design: true
