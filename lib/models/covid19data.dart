@@ -14,6 +14,7 @@ class COVID19DataModel extends ChangeNotifier {
   List<Record> _records = [];
   var _byDate = LinkedHashMap<DateTime, List<int>>();
   var _byRegion = Map<String, List<int>>();
+  var _unique = Map<String, int>();
 
   COVID19DataModel(){
     fetchData();
@@ -67,17 +68,26 @@ class COVID19DataModel extends ChangeNotifier {
     _records.clear();
     _byDate.clear();
     _byRegion.clear();
+    _unique.clear();
     var data = json.decode(jsonData) as List;
     for (var json in data) {
       var record = Record.fromJson(json);
       var idx = _records.length;
-      _records.add(record);
-      if (!_byDate.containsKey(record.data)) { _byDate[record.data] = []; }
-      _byDate[record.data].add(idx);
-      if (!_byRegion.containsKey(record.denominazioneRegione)) { _byRegion[record.denominazioneRegione] = []; }
-      _byRegion[record.denominazioneRegione].add(idx);
+      var pk = record.data.toIso8601String() + '|' +
+          record.denominazioneRegione;
+      if (!_unique.containsKey(pk)) {
+        _unique[pk] = 1;
+        _records.add(record);
+        if (!_byDate.containsKey(record.data)) {
+          _byDate[record.data] = [];
+        }
+        _byDate[record.data].add(idx);
+        if (!_byRegion.containsKey(record.denominazioneRegione)) {
+          _byRegion[record.denominazioneRegione] = [];
+        }
+        _byRegion[record.denominazioneRegione].add(idx);
+      }
     }
-
     print("_records: ${_records.length}");
     print("_byDate: ${_byDate.keys.length}");
     print("_byRegion: ${_byRegion.keys.length}");
